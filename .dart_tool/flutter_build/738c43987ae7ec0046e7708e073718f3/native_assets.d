@@ -1,0 +1,1 @@
+ /Users/ghassan/Desktop/hot_n_cold/.dart_tool/flutter_build/738c43987ae7ec0046e7708e073718f3/native_assets.yaml: 
