@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:hot_n_cold/constants.dart';
 import 'package:hot_n_cold/home_page.dart';
@@ -84,6 +85,7 @@ class Matrix {
 
   Widget getMatrixUI() {
     final matrix = getMatrixBoard();
+    final player = AudioPlayer();
 
     return Column(
       children: List.generate(matrixRowCount, (i) {
@@ -95,6 +97,7 @@ class Matrix {
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
                 child: TileCard(
+                  player: player,
                   tile: tile,
                   color: gameBrain.calcColor(tile),
                   diff: gameBrain.calcDiff(tile),
@@ -123,12 +126,14 @@ class TileCard extends StatefulWidget {
     required this.color,
     required this.diff,
     this.title = '',
+    required this.player,
   });
 
   final Tile tile;
   final Color color;
   final int diff;
   String? title;
+  final AudioPlayer player;
 
   @override
   State<TileCard> createState() => _TileCardState();
@@ -140,7 +145,12 @@ class _TileCardState extends State<TileCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        await widget.player.stop();
+        if (widget.diff > 0) {
+          await widget.player.play(AssetSource(
+              'notes/note_${((widget.diff + 1) > 7) ? 7 : (widget.diff + 1)}.wav'));
+        }
         setState(() {
           _isPressed = true;
           if (widget.diff == 0) {
